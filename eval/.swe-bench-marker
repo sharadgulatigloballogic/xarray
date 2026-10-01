@@ -1,0 +1,3 @@
+swe-custom-bench eval branch — base_commit: 98dc1f4ea18738492e074e9e51ddfed5cd30ab94
+repo: pydata/xarray
+branch: eval-pydata__xarray

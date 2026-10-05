@@ -3055,6 +3055,19 @@ class TestDataset:
         x = y.to_unstacked_dataset("features")
         assert_identical(D, x)
 
+    def test_to_stacked_array_to_unstacked_dataset_single_dim(self):
+        # regression test for GH4049: when all variables share a single
+        # dimension, the stacked coordinate's MultiIndex has only one level,
+        # so `sel` fully collapses the stacked dim rather than leaving a
+        # size-1 dim for `squeeze` to remove. This used to leave a scalar
+        # 'y' coordinate behind with conflicting values, raising a
+        # MergeError on reassembly.
+        arr = DataArray(np.arange(3), coords=[("x", [0, 1, 2])])
+        data = xr.Dataset({"a": arr, "b": arr})
+        stacked = data.to_stacked_array("y", sample_dims=["x"])
+        unstacked = stacked.to_unstacked_dataset("y")
+        assert_identical(unstacked, data)
+
     def test_update(self):
         data = create_test_data(seed=0)
         expected = data.copy()
